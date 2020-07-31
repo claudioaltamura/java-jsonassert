@@ -17,7 +17,7 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-annotations:2.11.1")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.11.1")
 
-    testImplementation("org.skyscreamer:jsonassert:1.5.0");
+    testImplementation("org.skyscreamer:jsonassert:1.5.0")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.1")
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.5.1")
