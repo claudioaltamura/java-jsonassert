@@ -32,4 +32,17 @@ class EmployeeJsonTest {
         () ->
             JSONAssert.assertEquals("{id:1,name:\"Clark Kent\"}", actual, JSONCompareMode.STRICT));
   }
+
+  @Test
+  void failureMessage() throws JsonProcessingException, JSONException {
+    Employee clark = new Employee(1L, "Clark Kent");
+
+    String actual = objectMapper.writeValueAsString(clark);
+    String failureMsg = "property missing";
+    try {
+      JSONAssert.assertEquals(failureMsg, "{id:1}", actual, JSONCompareMode.STRICT);
+    } catch (AssertionError ae) {
+      Assertions.assertEquals("property missing \n" + "Unexpected: name\n", ae.getMessage());
+    }
+  }
 }
