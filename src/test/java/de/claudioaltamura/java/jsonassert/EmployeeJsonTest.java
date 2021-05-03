@@ -1,16 +1,18 @@
 package de.claudioaltamura.java.jsonassert;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
 class EmployeeJsonTest {
 
-  private ObjectMapper objectMapper = new ObjectMapper();
+  private final ObjectMapper objectMapper = new ObjectMapper();
 
   @Test
   void lenient() throws JsonProcessingException, JSONException {
@@ -23,26 +25,34 @@ class EmployeeJsonTest {
   }
 
   @Test
-  void strictExceptionMissingName() throws JsonProcessingException, JSONException {
+  void strictExceptionMissingName() throws JsonProcessingException {
     Employee clark = new Employee(1L);
 
     String actual = objectMapper.writeValueAsString(clark);
-    Assertions.assertThrows(
-        AssertionError.class,
-        () ->
-            JSONAssert.assertEquals("{id:1,name:\"Clark Kent\"}", actual, JSONCompareMode.STRICT));
+
+    Throwable thrown =
+        catchThrowable(
+            () ->
+                JSONAssert.assertEquals(
+                    "{id:1,name:\"Clark Kent\"}", actual, JSONCompareMode.STRICT));
+
+    assertThat(thrown).isInstanceOf(AssertionError.class);
   }
 
   @Test
-  void failureMessage() throws JsonProcessingException, JSONException {
+  void failureMessage() throws JsonProcessingException {
     Employee clark = new Employee(1L, "Clark Kent");
 
     String actual = objectMapper.writeValueAsString(clark);
-    String failureMsg = "property missing";
-    try {
-      JSONAssert.assertEquals(failureMsg, "{id:1}", actual, JSONCompareMode.STRICT);
-    } catch (AssertionError ae) {
-      Assertions.assertEquals("property missing \n" + "Unexpected: name\n", ae.getMessage());
-    }
+    String failureMsg = "";
+
+    Throwable thrown =
+        catchThrowable(
+            () ->
+                JSONAssert.assertEquals(
+                    "property missing", "{id:1}", actual, JSONCompareMode.STRICT));
+
+    // property missing \n Unexpected: name\n
+    assertThat(thrown).hasMessageContaining("Unexpected: name");
   }
 }
