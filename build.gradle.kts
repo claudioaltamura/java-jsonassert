@@ -2,14 +2,17 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
     java
-    eclipse
-    idea
     id("com.diffplug.spotless") version "6.19.0"
     id("com.github.ben-manes.versions") version "0.46.0"
 }
 
 repositories {
     mavenCentral()
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 dependencies {
